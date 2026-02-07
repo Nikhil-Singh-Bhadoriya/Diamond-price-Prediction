@@ -31,19 +31,13 @@ This project implements an end-to-end machine learning pipeline to predict diamo
 
 ## 📥 Installation
 
-1. Clone the repository:
-```bash
-git clone https://github.com/Nikhil-Singh-Bhadoriya/Diamond-Price-Prediction.git
-cd Diamond-Price-Prediction/Diamond_Price_Prediction
-```
-
-2. Create a virtual environment:
+1. Create a virtual environment:
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. Install dependencies:
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
