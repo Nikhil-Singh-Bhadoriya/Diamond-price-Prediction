@@ -123,6 +123,3 @@ Watch the complete demonstration of the Diamond Price Prediction application in 
 - **Model Training.ipynb**: Model development and evaluation
 
 ---
-
-**Author**: Nikhil Singh Bhadoriya  
-**Repository**: [Diamond-Price-Prediction](https://github.com/Nikhil-Singh-Bhadoriya/Diamond-Price-Prediction)
