@@ -1,119 +1,77 @@
 # Diamond Price Prediction
 
-A machine learning project that predicts diamond prices based on various physical characteristics and quality attributes.
+This project explores and models diamond prices using a Kaggle dataset. It includes an exploratory data analysis notebook and a model training notebook using scikit-learn pipelines. The details below are pulled directly from the notebook outputs.
 
-## 📋 Project Overview
+## Notebooks
 
-This project implements an end-to-end machine learning pipeline to predict diamond prices using features such as carat, cut, color, clarity, and dimensions. The application is built with Flask and features a beautiful, modern web interface with custom CSS styling for an enhanced user experience.
+### EDA.ipynb
 
-## ✨ Features
+Highlights (actual notebook outputs):
+- Dataset shape and schema (from `df.info()`): 193,573 rows, 11 columns, memory usage 16.2 MB; dtypes float64(6), int64(2), str(3).
+- Missing values (from `df.isnull().sum()`): all 0 for every column.
+- Duplicate records (from `df.duplicated().sum()`): 0.
+- Numerical columns inferred: carat, cut, color, clarity, depth, table, x, y, z, price.
+- Categorical columns inferred by dtype: none (object columns were not detected in that step).
 
-- **Beautiful UI**: Modern gradient design with smooth animations and responsive layout
-- **Data Ingestion**: Automated data loading and splitting into train/test sets
-- **Data Transformation**: Feature engineering and preprocessing pipeline
-- **Model Training**: Machine learning model training with hyperparameter tuning
-- **Web Interface**: Interactive Flask web application with stunning CSS design
-- **Prediction Pipeline**: Real-time prediction system for new diamond data
-- **Logging**: Comprehensive logging system for debugging and monitoring
-- **Exception Handling**: Custom exception handling for better error management
-- **Demo Video**: Complete demonstration of the application in action
+Sample rows (first 5, before dropping `id`):
 
+| id | carat | cut | color | clarity | depth | table | x | y | z | price |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1.52 | Premium | F | VS2 | 62.2 | 58.0 | 7.27 | 7.33 | 4.55 | 13619 |
+| 1 | 2.03 | Very Good | J | SI2 | 62.0 | 58.0 | 8.06 | 8.12 | 5.05 | 13387 |
+| 2 | 0.70 | Ideal | G | VS1 | 61.2 | 57.0 | 5.69 | 5.73 | 3.50 | 2772 |
+| 3 | 0.32 | Ideal | G | VS1 | 61.6 | 56.0 | 4.38 | 4.41 | 2.71 | 666 |
+| 4 | 1.70 | Premium | G | VS2 | 62.6 | 59.0 | 7.65 | 7.61 | 4.77 | 14453 |
 
+After dropping `id`, the first 5 rows are the same minus the `id` column.
 
-## 🔧 Technologies Used
+Category counts (from `value_counts()`):
+- Cut: Ideal 92,454; Premium 49,910; Very Good 37,566; Good 11,622; Fair 2,021.
+- Color: G 44,391; E 35,869; F 34,258; H 30,799; D 24,286; I 17,514; J 6,456.
+- Clarity: SI1 53,272; VS2 48,027; VS1 30,669; SI2 30,484; VVS2 15,762; VVS1 10,628; IF 4,219; I1 512.
 
-- **Python 3.x**
-- **Flask**: Web framework
-- **scikit-learn**: Machine learning algorithms
-- **Pandas**: Data manipulation
-- **NumPy**: Numerical computations
-- **Seaborn**: Data visualization
+### Model Training.ipynb
 
-## 📥 Installation
+Highlights (actual notebook outputs):
+- Target: `price`; features are all other columns after dropping `id`.
+- Preprocessing: median imputation + standard scaling for numeric features; most-frequent imputation + ordinal encoding + scaling for categorical features.
+- Train/test split: test size 0.30, random state 30.
 
-1. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+Model evaluation (from the training cell output):
 
+| Model | RMSE | MAE | R2 (%) |
+| --- | --- | --- | --- |
+| LinearRegression | 1013.9047094344004 | 674.0255115796832 | 93.68908248567512 |
+| Lasso | 1013.8784226767013 | 675.0716923362165 | 93.68940971841704 |
+| Ridge | 1013.9059272771611 | 674.0555800798174 | 93.68906732505941 |
+| Elasticnet | 1533.4162456064046 | 1060.7368759154729 | 85.56494831165182 |
+
+Linear regression coefficients and intercept (from notebook output):
+- Coefficients: [6433.66003594, -132.75843566, -70.42922179, -1720.30971463, -499.29302619, -63.39317848, 72.44537247, -460.41604642, 650.76431652]
+- Intercept: 3970.76628955
+
+## Approach
+
+- Load the Kaggle dataset and inspect schema, missing values, and duplicates.
+- Drop the `id` column and review distributions and correlations.
+- Treat `cut`, `color`, and `clarity` as ordinal categorical features.
+- Build preprocessing pipelines: median imputation + standard scaling for numeric; most-frequent imputation + ordinal encoding + scaling for categorical.
+- Split data into train/test sets and compare LinearRegression, Lasso, Ridge, and ElasticNet using RMSE, MAE, and R2.
+
+## How To Run
+
+1. Open the notebook you want to run in VS Code or Jupyter.
 2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+   - pandas
+   - numpy
+   - scikit-learn
+   - seaborn
+   - matplotlib
+3. Update the dataset path if needed.
 
-## 🚀 Usage
+Notes:
+- The notebooks reference `data/gemstone.csv`. In this workspace the file is at the repo root as `gemstone.csv`, so either update the path or create a `data/` folder and move the file there.
 
-1. **Run the Flask application**:
-```bash
-python application.py
-```
+## License
 
-2. **Access the web interface**:
-   - Open your browser and navigate to `http://localhost:5000`
-   - Fill in the diamond characteristics in the form
-   - Click predict to get the estimated price
-
-3. **Input Features**:
-   - **Carat**: Weight of the diamond
-   - **Cut**: Quality of the cut (Fair, Good, Very Good, Premium, Ideal)
-   - **Color**: Diamond color grade (D to J)
-   - **Clarity**: Diamond clarity (IF, VVS1, VVS2, VS1, VS2, SI1, SI2, I1)
-   - **Depth**: Total depth percentage
-   - **Table**: Width of top of diamond relative to widest point
-   - **X, Y, Z**: Length, width, and depth dimensions in mm
-
-## 📊 Model Training
-
-To retrain the model with new data:
-
-1. Place your dataset in the appropriate location
-2. Run the training pipeline:
-```python
-from src.pipelines.training_pipeline import TrainingPipeline
-pipeline = TrainingPipeline()
-pipeline.run()
-```
-
-## � Project Structure
-
-```
-Diamond_Price_Prediction/
-├── application.py          # Flask application
-├── static/
-│   └── style.css          # Custom CSS styling
-├── templates/
-│   ├── index.html         # Home page
-│   └── form.html          # Prediction form
-├── src/
-│   ├── components/        # Data ingestion, transformation, model training
-│   ├── pipelines/         # Training and prediction pipelines
-│   ├── logger.py          # Logging configuration
-│   ├── exception.py       # Custom exceptions
-│   └── utils.py           # Utility functions
-├── notebooks/
-│   ├── EDA.ipynb          # Exploratory Data Analysis
-│   └── Model Training.ipynb
-├── artifacts/             # Saved models and preprocessors
-└── Demo Video.mp4         # Project demonstration
-
-```
-
-## 🎥 Demo Video
-
-Watch the complete demonstration of the Diamond Price Prediction application in action: **Demo Video.mp4**
-
-## 🎨 UI Features
-
-- Gradient purple theme with smooth animations
-- Responsive design for all screen sizes
-- Interactive form with real-time validation
-- Beautiful result display with price formatting
-- Diamond icon and modern typography
-
-## 📝 Notebooks
-
-- **EDA.ipynb**: Exploratory Data Analysis with visualizations and insights
-- **Model Training.ipynb**: Model development and evaluation
-
----
+Add your preferred license here.
